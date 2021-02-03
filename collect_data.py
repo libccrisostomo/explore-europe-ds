@@ -36,7 +36,9 @@ def scrape_LI_page(username, password, keyword, location, experience_levels):
 
     # Send input to location search box
     jobID = browser.find_element_by_id(searchID[1])
-    jobID.send_keys([location])
+    for loc in location:
+        jobID.send_keys([location])
+        jobID.send_keys(' ')
 
     # Click search button
     search = browser.find_element_by_class_name('jobs-search-box__submit-button')
@@ -69,4 +71,6 @@ def scrape_LI_page(username, password, keyword, location, experience_levels):
     results = soup.find('small', {'class': 'display-flex t-12 t-black--light t-normal'}).get_text().strip().split()[0]
     results = float(results.replace(',', ''))  # converting str into float
     print('There are ' + str(results) + ' jobs for your search ( ͡°( ͡° ͜ʖ( ͡° ͜ʖ ͡°)ʖ ͡°) ͡°)')
+
+    browser.find_elements_by_class_name('job-card-container__metadata-wrapper')
 
