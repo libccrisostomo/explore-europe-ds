@@ -70,4 +70,3 @@ def scrape_LI_page(username, password, keyword, location, experience_levels):
     results = float(results.replace(',', ''))  # converting str into float
     print('There are ' + str(results) + ' jobs for your search ( ͡°( ͡° ͜ʖ( ͡° ͜ʖ ͡°)ʖ ͡°) ͡°)')
 
-    return results
