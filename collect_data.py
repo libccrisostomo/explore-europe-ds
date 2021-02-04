@@ -36,9 +36,7 @@ def scrape_LI_page(username, password, keyword, location, experience_levels):
 
     # Send input to location search box
     jobID = browser.find_element_by_id(searchID[1])
-    for loc in location:
-        jobID.send_keys([location])
-        jobID.send_keys(' ')
+    jobID.send_keys([location])
 
     # Click search button
     search = browser.find_element_by_class_name('jobs-search-box__submit-button')
@@ -74,3 +72,10 @@ def scrape_LI_page(username, password, keyword, location, experience_levels):
 
     browser.find_elements_by_class_name('job-card-container__metadata-wrapper')
 
+
+def location_crawler(job_location_list, browser_argument):
+    job_list = browser_argument.find_elements_by_xpath("//*[contains(@class, 'job-card-container__metadata-wrapper')]")
+    location_list = [i.text for i in job_list]
+    job_location_list.extend(location_list)
+    time.sleep(3)
+    return job_location_list
