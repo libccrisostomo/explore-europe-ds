@@ -137,4 +137,6 @@ def location_crawler(job_location_list, browser_argument):
     location_list = [i.text for i in job_list]
     job_location_list.extend(location_list)
     time.sleep(3)
+    print('Added ' + str(len(location_list))+' locations to list. Total number of locations is ' + str(
+        len(job_location_list)))
     return job_location_list
