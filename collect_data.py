@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-def scrape_LI_page(username, password, keyword, location, experience_levels, max_pages):
+def scrape_LI_page(username, password, keyword, location, experience_levels, max_pages=None):
     """ Opens a LinkedIn page, logs the user in, and initates a job search with customizable keywords, location,
     and experience levels (list of strings). Works for portuguese language only. """
 
@@ -113,10 +113,15 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
             pages_displayed = browser.find_elements_by_xpath("//*[contains(@class, 'artdeco-pagination__indicator "
                                                              "artdeco-pagination__indicator--number ember-view')]")
             pages = [i.text for i in pages_displayed]
-        else:
+
+        elif actual_page != 40:
             next_page = WebDriverWait(browser, 20).until(EC.element_to_be_clickable(
                 (By.XPATH, '//button[@type="button" and contains(., "' + str(actual_page + 1) + '")]')))
             next_page.click()
+
+        else:
+            print('Successfully scrawled '+str(actual_page)+' pages with locations of '+str(len(job_location_list))+
+                  'job offers.')
         actual_page += 1
         browser.implicitly_wait(5)  # wait 5 seconds seconds
 
