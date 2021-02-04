@@ -120,13 +120,14 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
             next_page.click()
 
         else:
-            print('Successfully scrawled '+str(actual_page)+' pages with locations of '+str(len(job_location_list))+
-                  'job offers.')
+            print('Successfully scrawled '+str(actual_page)+' pages with locations of '+str(len(job_location_list)) +
+                  ' job offers.')
         actual_page += 1
         browser.implicitly_wait(5)  # wait 5 seconds seconds
 
-    return job_location_list
-
+        with open('job_locations.txt', 'w') as f:
+            for item in job_location_list:
+                f.write("%s\n" % item)
 
 def location_crawler(job_location_list, browser_argument):
     """ gets locations from every job posting in the LI page: browser_argument
