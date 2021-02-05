@@ -3,24 +3,37 @@ from selenium import webdriver
 import time
 from bs4 import BeautifulSoup
 import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from sklearn.impute import KNNImputer
+from sklearn import preprocessing
+import numpy as np
 
 
-def scrape_LI_page(username, password, keyword, location, experience_levels, max_page=None):
-    """ Opens a LinkedIn page, logs the user in, and indicates a job search with customizable keywords, location,
-    and experience levels (list of strings). Works for portuguese language only.
+def scrape_LI_page(username, password, keyword='Data Scientist', location='World',
+                   experience_levels=('Entry level', 'Associate', 'Mid-Senior level',
+                                      'Internship', 'Director', 'Executive'),
+                   max_page=None):
+    """ Opens a LinkedIn page, logs the user in, and initiates a job search with customizable keywords, location,
+    and experience levels (list of strings). Works for LI in english only. \n
+
     :param username: username of the account
-    :param password: password of the account
-    :param keyword: job keywords to look for in search
+    :type username: str
+    :param password: str, Password of the account
+    :type password: str
+    :param keyword: job keyword to look for in search
     :param location: job locations to include in search
-    :param experience_levels: list of qualifications available, form ['Entry level', 'Associate', 'Mid-Senior level',
-    'Internship', 'Director', 'Executive']
-    :param max_page: Not required. Maximum number of pages to scrape"""
+    :param experience_levels: experience levels, available: ['Entry level', 'Associate', 'Mid-Senior level',
+    'Internship', 'Director', 'Executive']. Selects all by default
+    :param max_page: int, maximum number of pages to scrape"""
 
     # defining browser as chrome and starting page LinkedIn
 
+    if experience_levels is None:
+        experience_levels = ['Entry level', 'Associate', 'Mid-Senior level',
+                             'Internship', 'Director', 'Executive']
     browser = webdriver.Chrome(executable_path='C:/Users/ASUS/Documents/GitHub/explore-europe-ds/Chromedriver'
                                                '/chromedriver')
 
@@ -105,7 +118,6 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
         max_page = int(pages[-1])  # max page to click on (last page)
 
     job_location_list = []  # to save all the locations
-    pages_crawled = []  # to log which pages have been crawled already
     actual_page = 1  # starting page
     browser.set_window_size(1000, 800)  # so that we can scroll down a page that will only consist of the job offers
 
@@ -155,9 +167,10 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
 
 
 def location_crawler(job_location_list, browser):
-    """ gets locations from every job posting in the LI page: browser_argument
-    and saves it to the list: job_location_list. Used in  scrape_LI_page.
+    """ Gets locations from every job offer in the specified LinkedIn page,
+    and saves it to the list: job_location_list. Used in  scrape_LI_page. \n
     :param job_location_list: list to extend with job locations
+    :type job_location_list: list
     :param browser: webdriver instance
     :return:  list with the extended job locations from all the pages until now"""
     scrollDownAllTheWay(browser)  # slowly scroll to the bottom om the page in order to get all locations
@@ -173,13 +186,14 @@ def scrollDown(driver, value):
     """ Scrolls down a page at a quantity of 'value'
     :param driver: webdriver instance
     :param value: scroll quantity indicator
+    :type value:
     """
     driver.execute_script("window.scrollBy(0," + str(value) + ")")
 
 
 def scrollDownAllTheWay(driver):
     """ Slowly scrolls down a whole page, step by step as indicated in the function scrollDown, until the page is
-    fully loaded, aka there are no changes to the html after further scroll.
+    fully loaded, aka there are no changes to the html after further scroll.\n
     :param driver: webdriver instance
     :return: no return, the website is scrolled to the bottom"""
     old_page = driver.page_source
@@ -193,3 +207,73 @@ def scrollDownAllTheWay(driver):
         else:
             break
     return True
+
+
+def process_df(df, country_filter=None):
+    """ Processes the location list obtained by run.py. \n
+    - Eliminates the Region of the location, keeping only City and Country
+    - Imputes missing values (KNN Imputer w/ 10 neighbors)
+    - Uniformizes different notations of city names
+    - Eliminates records with location 'Remote'
+    - Filters records by country if desired
+    :param df: txt file obtained by run.py
+    :param country_filter: str of a country to filter by, default None
+    :return: pandas DataFrame with processed locations"""
+
+    # importing job location data
+    if len(df.columns) == 3:
+        df.columns = ['City', 'Region', 'Country']
+        # Missing values in Country
+        # if a record only has a missing value in country, we can assume that the country name is in the 'Region' column
+        df.loc[:, 'Country'] = df.Country.fillna(df['Region'])
+
+        # Dropping Region: Region is not really interesting... column can be dropped
+        df.drop(['Region'], axis=1, inplace=True)
+
+    else:
+        df.columns = ['City', 'Country']
+
+    # Dropping Remote jobs
+    # If the City name is = 'remote', then there is no location for the job
+    df = df.loc[df.City != 'Remote']
+
+    # eliminate the words 'Metropolian' and 'Area' from city names
+    df.loc[:, 'City'] = df.loc[:, 'City'].map(lambda x: x.replace('Metropolitan', '').replace(
+        'Area', '').replace('Region', '').replace('Community of', '').replace(
+        'Greater', '').replace('Lisboa', 'Lisbon').strip())
+
+    df.loc[:, 'Country'] = df.loc[:, 'Country'].map(lambda x: str(x).strip())  # removing unnecessary spaces
+
+    # Remaining missing values in Country
+    # some of these missing values can be imputed. For instance, if a record with 'City'='Paris', we can deduce from the
+    # remaining data that the missing country is 'France'
+    imputer = KNNImputer(n_neighbors=10)
+    # converting missing values to strings
+    df = df.fillna('NaN')
+    # saving indices of NaN
+    df_nan_index = df.loc[df.Country == 'NaN'].index
+
+    # encoding cities and countries, to apply the KKN Imputer
+    # defining and fitting label encoder instances for City and Country
+    le_city = preprocessing.LabelEncoder()
+    le_country = preprocessing.LabelEncoder()
+
+    df.loc[:, 'City'] = le_city.fit_transform(df['City'])
+    df.loc[:, 'Country'] = le_country.fit_transform(df['Country'])
+
+    # reinserting missing values
+    df.loc[df.index.isin(df_nan_index), 'Country'] = np.nan
+
+    # filling missing values
+    df = pd.DataFrame(imputer.fit_transform(df), columns=['City', 'Country'])
+    # KNN Imputer returns the average value of the nearest neighbors, but we want int only
+    df = df.astype('int32')
+
+    # transforming the labels back to city and country names
+    df.loc[:, 'City'] = le_city.inverse_transform(df['City'])
+    df.loc[:, 'Country'] = le_country.inverse_transform(df['Country'])
+
+    if country_filter:
+        df = df.loc[df['Country'] == country_filter]
+
+    return df
