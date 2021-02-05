@@ -108,6 +108,7 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
         print('Scrolling page ' + str(actual_page))
         browser.execute_script("window.scrollTo(0, 0)")
         job_location_list = location_crawler(job_location_list, browser)
+
         if int(pages[-3]) == actual_page:
             # then we click '...' and land automatically on the next page
             browser.implicitly_wait(5)  # wait 5 seconds seconds
@@ -122,20 +123,22 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
 
         elif actual_page != max_page:
             next_page = browser.find_elements_by_xpath(
-                '//button[@type="button" and contains(., "' + str(actual_page + 1) + '")]')[-1]
+                '//button[@type="button" and contains(., "' + str(actual_page + 1) + '")]')
+            # there can be several buttons that contain the number we're looking for, hence the next line to find
+            # right button
+            next_page = list(filter(lambda x: x.text == str(actual_page + 1), next_page))[0]
             next_page.click()
             print('Moving on to page ' + str(actual_page + 1) + '...')
+
         else:
             print('Successfully retrieved ' + str(actual_page) + ' pages with locations of ' + str(
                 len(job_location_list)) + ' job offers.')
-
             # saving job_location_list to txt file
             with open('job_locations.txt', 'w') as f:
                 for item in job_location_list:
                     f.write("%s\n" % item)
-        actual_page += 1
-        browser.implicitly_wait(5)  # wait 5 seconds seconds
 
+        actual_page += 1
 
 
 def location_crawler(job_location_list, browser):
