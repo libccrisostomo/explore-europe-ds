@@ -14,10 +14,11 @@ import numpy as np
 
 def scrape_LI_page(username, password, keyword='Data Scientist', location='World',
                    experience_levels=('Entry level', 'Associate', 'Mid-Senior level',
-                                      'Internship', 'Director', 'Executive'),
+                                      'Internship', 'Director', 'Executive'), start_page=1,
                    max_page=None, filename='job_locations'):
     """ Opens a LinkedIn page, logs the user in, and initiates a job search with customizable keywords, location,
     and experience levels (list of strings). Works for LI in english only. Saves a txt file called job_locations.txt
+    by default (personalizable).
     \n
 
     :param username: username of the account
@@ -26,9 +27,11 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
     :type password: str
     :param keyword: job keyword to look for in search
     :param location: job locations to include in search
-    :param experience_levels: experience levels, available: ['Entry level', 'Associate', 'Mid-Senior level',
-    'Internship', 'Director', 'Executive']. Selects all by default
+    :param experience_levels: experience levels, available: ['Entry level', 'Associate', 'Mid-Senior level', 'Internship', 'Director', 'Executive']. Selects all by default
+    :param start_page: number of page to start scraping on
+    :type start_page: int
     :param max_page: int, maximum number of pages to scrape
+    :type max_page: int
     :param filename: name of the txt file that will be saved
     :type filename: str """
 
@@ -121,7 +124,7 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
         max_page = int(pages[-1])  # max page to click on (last page)
 
     job_location_list = []  # to save all the locations
-    actual_page = 1  # starting page
+    actual_page = start_page  # starting page
     browser.set_window_size(1000, 800)  # so that we can scroll down a page that will only consist of the job offers
 
     # this loop scrapes the lob locations for every available page
@@ -159,13 +162,14 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
             # we have reached the last page
             print('Successfully retrieved ' + str(actual_page) + ' pages with locations of ' + str(
                 len(job_location_list)) + ' job offers.')
-            # saving job_location_list to txt file
-            with open(str(filename)+'.txt', 'w') as f:
-                for item in job_location_list:
-                    try:
-                        f.write("%s\n" % item)
-                    except UnicodeEncodeError:
-                        print('This location could not be saved: ' + item)
+
+        # saving job_location_list to txt file
+        with open(str(filename)+'.txt', 'w') as f:
+            for item in job_location_list:
+                try:
+                    f.write("%s\n" % item)
+                except UnicodeEncodeError:
+                    print('This location could not be saved: ' + item)
 
         actual_page += 1
 
