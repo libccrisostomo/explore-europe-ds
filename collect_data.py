@@ -111,12 +111,13 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
 
         if int(pages[-3]) == actual_page:
             # then we click '...' and land automatically on the next page
-            browser.implicitly_wait(5)  # wait 5 seconds seconds
+
             ellipsis_page = browser.find_elements_by_xpath('//button[@type="button" and contains(., "…")]')[-1]
             ellipsis_page.click()
             print('Moving on to page ' + str(actual_page + 1) + '...')
 
             # reload available pages list
+            time.sleep(3)
             pages_displayed = browser.find_elements_by_xpath("//*[contains(@class, 'artdeco-pagination__indicator "
                                                              "artdeco-pagination__indicator--number ember-view')]")
             pages = [i.text for i in pages_displayed]
@@ -136,7 +137,10 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
             # saving job_location_list to txt file
             with open('job_locations.txt', 'w') as f:
                 for item in job_location_list:
-                    f.write("%s\n" % item)
+                    try:
+                        f.write("%s\n" % item)
+                    except UnicodeEncodeError:
+                        print('This location could not be saved: ' + item)
 
         actual_page += 1
 
