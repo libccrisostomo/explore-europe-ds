@@ -278,7 +278,7 @@ def process_df(df, country_filter=None):
     df.loc[:, 'Country'] = le_country.inverse_transform(df['Country'])
 
     # if City = Country
-    df = df.loc[df['City'] == df['Country']]
+    df = df.loc[df.City != df.Country]
 
     if country_filter:
         df = df.loc[df['Country'] == country_filter]
