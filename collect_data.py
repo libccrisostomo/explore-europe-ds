@@ -9,8 +9,15 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 def scrape_LI_page(username, password, keyword, location, experience_levels, max_page=None):
-    """ Opens a LinkedIn page, logs the user in, and initates a job search with customizable keywords, location,
-    and experience levels (list of strings). Works for portuguese language only. """
+    """ Opens a LinkedIn page, logs the user in, and indicates a job search with customizable keywords, location,
+    and experience levels (list of strings). Works for portuguese language only.
+    :param username: username of the account
+    :param password: password of the account
+    :param keyword: job keywords to look for in search
+    :param location: job locations to include in search
+    :param experience_levels: list of qualifications available, form ['Entry level', 'Associate', 'Mid-Senior level',
+    'Internship', 'Director', 'Executive']
+    :param max_page: Not required. Maximum number of pages to scrape"""
 
     # defining browser as chrome and starting page LinkedIn
 
@@ -21,31 +28,31 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
     browser.get('https://www.linkedin.com/login?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin')
 
     # Enter login info:
-    elementID = browser.find_element_by_id('username')
-    elementID.send_keys(username)
-    elementID = browser.find_element_by_id('password')
-    elementID.send_keys(password)
-    elementID.submit()
+    username_id = browser.find_element_by_id('username')
+    username_id.send_keys(username)
+    pw_id = browser.find_element_by_id('password')
+    pw_id.send_keys(password)
+    pw_id.submit()
 
     # Go to webpage
     browser.get('https://www.linkedin.com/jobs/?showJobAlertsModal=false')
 
     # Find customizable search box id's
-    searchID_all = browser.find_elements_by_class_name('jobs-search-box__text-input')
-    searchID_list = [i.get_attribute('id') for i in searchID_all]
-    searchID = list(filter(None, searchID_list))  # list of id's with class = jobs-search-box__text-input
+    search_boxes = browser.find_elements_by_class_name('jobs-search-box__text-input')
+    search_boxes_list = [i.get_attribute('id') for i in search_boxes]
+    search_boxes_id = list(filter(None, search_boxes_list))  # list of id's with class = jobs-search-box__text-input
 
     # Send input to keyword search box
-    jobID = browser.find_element_by_id(searchID[0])
-    jobID.send_keys([keyword])
+    job_id = browser.find_element_by_id(search_boxes_id[0])
+    job_id.send_keys([keyword])
 
     # Send input to location search box
-    jobID = browser.find_element_by_id(searchID[1])
-    jobID.send_keys(location)
+    location_id = browser.find_element_by_id(search_boxes_id[1])
+    location_id.send_keys(location)
 
     # Click search button
-    search = browser.find_element_by_class_name('jobs-search-box__submit-button')
-    search.click()
+    search_button = browser.find_element_by_class_name('jobs-search-box__submit-button')
+    search_button.click()
 
     # Find customizable filter buttons
     time.sleep(3)  # wait until the page has finished loading
@@ -100,9 +107,9 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
     job_location_list = []  # to save all the locations
     pages_crawled = []  # to log which pages have been crawled already
     actual_page = 1  # starting page
-    browser.set_window_size(1000, 800)  # so that we can scroll down the page, that will only consist of the job offers,
-    # and not the right window with details about the selected job
+    browser.set_window_size(1000, 800)  # so that we can scroll down a page that will only consist of the job offers
 
+    # this loop scrapes the lob locations for every available page
     while actual_page <= max_page:
         # range starts at 2 because page 1 is default
         print('Scrolling page ' + str(actual_page))
@@ -123,6 +130,7 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
             pages = [i.text for i in pages_displayed]
 
         elif actual_page != max_page:
+            # then we will select the next page
             next_page = browser.find_elements_by_xpath(
                 '//button[@type="button" and contains(., "' + str(actual_page + 1) + '")]')
             # there can be several buttons that contain the number we're looking for, hence the next line to find
@@ -132,6 +140,7 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
             print('Moving on to page ' + str(actual_page + 1) + '...')
 
         else:
+            # we have reached the last page
             print('Successfully retrieved ' + str(actual_page) + ' pages with locations of ' + str(
                 len(job_location_list)) + ' job offers.')
             # saving job_location_list to txt file
@@ -147,21 +156,32 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
 
 def location_crawler(job_location_list, browser):
     """ gets locations from every job posting in the LI page: browser_argument
-    and saves it to the list: job_location_list. Used in  scrape_LI_page. """
+    and saves it to the list: job_location_list. Used in  scrape_LI_page.
+    :param job_location_list: list to extend with job locations
+    :param browser: webdriver instance
+    :return:  list with the extended job locations from all the pages until now"""
     scrollDownAllTheWay(browser)  # slowly scroll to the bottom om the page in order to get all locations
-    job_list = browser.find_elements_by_xpath("//*[contains(@class, 'job-card-container__metadata-item')]")
-    location_list = [i.text for i in job_list]
-    job_location_list.extend(location_list)
+    job_list = browser.find_elements_by_xpath("//*[contains(@class, 'job-card-container__metadata-item')]")  # jobs
+    location_list = [i.text for i in job_list]  # list of job locations
+    job_location_list.extend(location_list)  # add job locations from this page to the list
     print('Added ' + str(len(location_list)) + ' locations to list. Total number of locations is ' + str(
-        len(job_location_list))+'.')
+        len(job_location_list)) + '.')
     return job_location_list
 
 
 def scrollDown(driver, value):
-    driver.execute_script("window.scrollBy(0,"+str(value)+")")
+    """ Scrolls down a page at a quantity of 'value'
+    :param driver: webdriver instance
+    :param value: scroll quantity indicator
+    """
+    driver.execute_script("window.scrollBy(0," + str(value) + ")")
 
-# Scroll down the page
+
 def scrollDownAllTheWay(driver):
+    """ Slowly scrolls down a whole page, step by step as indicated in the function scrollDown, until the page is
+    fully loaded, aka there are no changes to the html after further scroll.
+    :param driver: webdriver instance
+    :return: no return, the website is scrolled to the bottom"""
     old_page = driver.page_source
     while True:
         for i in range(2):
