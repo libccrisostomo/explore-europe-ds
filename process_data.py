@@ -24,7 +24,7 @@ df = df.loc[df.City != 'Remote']
 df['City'].str.split(' ', expand=True)
 df['City'] = df['City'].map(lambda x: x.replace('Metropolitan', '').replace(
     'Area', '').replace('Region', '').replace('Community of', '').replace(
-    'Greater', '').strip())
+    'Greater', '').replace('Lisboa', 'Lisbon').strip())
 
 # Remaining missing values in Country
 # some of these missing values can be imputed. For instance, if a record with 'City'='Paris', we can deduce from the
