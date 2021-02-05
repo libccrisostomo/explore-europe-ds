@@ -176,6 +176,7 @@ def location_crawler(job_location_list, browser):
     :type job_location_list: list
     :param browser: webdriver instance
     :return:  list with the extended job locations from all the pages until now"""
+    time.sleep(2)
     scrollDownAllTheWay(browser)  # slowly scroll to the bottom om the page in order to get all locations
     job_list = browser.find_elements_by_xpath("//*[contains(@class, 'job-card-container__metadata-item')]")  # jobs
     location_list = [i.text for i in job_list]  # list of job locations
