@@ -1,5 +1,4 @@
 import plotly.express as px
-import plotly.io as pio
 from process_data import *
 
 fig_eu = px.sunburst(df_eu, path=['Country', 'City'])

@@ -27,4 +27,3 @@ df_at = process_df(df_at, 'Austria')
 #
 # df_fr = pd.read_csv('job_locations_PT.txt', header=None, encoding='ISO-8859-1')
 # df_fr = process_df(df_dk, 'France')
-

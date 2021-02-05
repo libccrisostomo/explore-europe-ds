@@ -3,7 +3,6 @@ from selenium import webdriver
 import time
 from bs4 import BeautifulSoup
 import pandas as pd
-pd.options.mode.chained_assignment = None  # default='warn'
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -18,7 +17,7 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
                    max_page=None, filename='job_locations'):
     """ Opens a LinkedIn page, logs the user in, and initiates a job search with customizable keywords, location,
     and experience levels (list of strings). Works for LI in english only. Saves a txt file called job_locations.txt
-    by default (personalizable).
+    by default (can be personalized).
     \n
 
     :param username: username of the account
@@ -164,7 +163,7 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
                 len(job_location_list)) + ' job offers.')
 
         # saving job_location_list to txt file
-        with open(str(filename)+'.txt', 'w') as f:
+        with open(str(filename) + '.txt', 'w') as f:
             for item in job_location_list:
                 try:
                     f.write("%s\n" % item)
@@ -228,7 +227,6 @@ def process_df(df, country_filter=None):
     :param df: txt file obtained by run.py
     :param country_filter: str of a country to filter by, default None
     :return: pandas DataFrame with processed locations"""
-    df = pd.read_csv('job_locations_EU.txt', header=None, encoding='ISO-8859-1')
 
     # importing job location data
     df.columns = ['City', 'Region', 'Country']
