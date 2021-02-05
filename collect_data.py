@@ -100,8 +100,8 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
     while actual_page <= max_page:
         print('Scrolling page ' + str(actual_page))
         # range starts at 2 because page 1 is default
-        job_location_list = location_crawler(job_location_list, browser)
         browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        job_location_list = location_crawler(job_location_list, browser)
         if int(pages[-3]) == actual_page:
             # then we click '...' and land automatically on the next page
             browser.implicitly_wait(5)  # wait 5 seconds seconds
@@ -114,7 +114,7 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
                                                              "artdeco-pagination__indicator--number ember-view')]")
             pages = [i.text for i in pages_displayed]
 
-        elif actual_page != 40:
+        elif actual_page != max_page:
             next_page = WebDriverWait(browser, 20).until(EC.element_to_be_clickable(
                 (By.XPATH, '//button[@type="button" and contains(., "' + str(actual_page + 1) + '")]')))
             next_page.click()
@@ -129,14 +129,35 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
             for item in job_location_list:
                 f.write("%s\n" % item)
 
-def location_crawler(job_location_list, browser_argument):
+def location_crawler(job_location_list, browser):
     """ gets locations from every job posting in the LI page: browser_argument
     and saves it to the list: job_location_list. Used in  scrape_LI_page. """
-    time.sleep(3)
-    job_list = browser_argument.find_elements_by_xpath("//*[contains(@class, 'job-card-container__metadata-wrapper')]")
+
+    scrollDownAllTheWay(browser)  # slowly scroll to the bottom om the page in order to get all locations
+    job_list = browser.find_elements_by_xpath("//*[contains(@class, 'job-card-container__metadata-item')]")
+
     location_list = [i.text for i in job_list]
     job_location_list.extend(location_list)
     time.sleep(3)
-    print('Added ' + str(len(location_list))+' locations to list. Total number of locations is ' + str(
+    print('Added ' + str(len(location_list)) + ' locations to list. Total number of locations is ' + str(
         len(job_location_list)))
     return job_location_list
+
+
+def scrollDown(driver, value):
+    driver.execute_script("window.scrollBy(0,"+str(value)+")")
+
+# Scroll down the page
+def scrollDownAllTheWay(driver):
+    old_page = driver.page_source
+    while True:
+        for i in range(2):
+            scrollDown(driver, 500)
+            time.sleep(2)
+        new_page = driver.page_source
+        if new_page != old_page:
+            old_page = new_page
+        else:
+            break
+    return True
+
