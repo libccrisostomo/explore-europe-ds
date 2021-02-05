@@ -4,6 +4,6 @@ scrape_LI_page(username='laura.ibcc98@gmail.com',
                password='helloworld',
                keyword='Data Scientist',
                location=['European Union'],
-               experience_levels=['Assistente', 'Estágio', 'Júnior'])
+               experience_levels=['Associate', 'Entry level', 'Internship'])
 
 
