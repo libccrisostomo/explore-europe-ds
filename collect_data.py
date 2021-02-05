@@ -152,6 +152,7 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
             # right button
             next_page = list(filter(lambda x: x.text == str(actual_page + 1), next_page))[0]
             next_page.click()
+            time.sleep(2)
             print('Moving on to page ' + str(actual_page + 1) + '...')
 
         else:
