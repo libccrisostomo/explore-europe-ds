@@ -10,3 +10,9 @@ fig_pt.show()
 
 fig_de = px.sunburst(df_de, path=['Country', 'City'])
 fig_de.show()
+
+fig_nl = px.sunburst(df_nl, path=['Country', 'City'])
+fig_nl.show()
+
+fig_at = px.sunburst(df_at, path=['Country', 'City'])
+fig_at.show()

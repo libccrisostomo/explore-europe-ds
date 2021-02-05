@@ -228,19 +228,16 @@ def process_df(df, country_filter=None):
     :param df: txt file obtained by run.py
     :param country_filter: str of a country to filter by, default None
     :return: pandas DataFrame with processed locations"""
+    df = pd.read_csv('job_locations_EU.txt', header=None, encoding='ISO-8859-1')
 
     # importing job location data
-    if len(df.columns) == 3:
-        df.columns = ['City', 'Region', 'Country']
-        # Missing values in Country
-        # if a record only has a missing value in country, we can assume that the country name is in the 'Region' column
-        df.loc[:, 'Country'] = df.Country.fillna(df['Region'])
+    df.columns = ['City', 'Region', 'Country']
+    # Missing values in Country
+    # if a record only has a missing value in country, we can assume that the country name is in the 'Region' column
+    df.loc[:, 'Country'] = df.Country.fillna(df['Region'])
 
-        # Dropping Region: Region is not really interesting... column can be dropped
-        df.drop(['Region'], axis=1, inplace=True)
-
-    else:
-        df.columns = ['City', 'Country']
+    # Dropping Region: Region is not really interesting... column can be dropped
+    df.drop(['Region'], axis=1, inplace=True)
 
     # Dropping Remote jobs
     # If the City name is = 'remote', then there is no location for the job
@@ -249,7 +246,7 @@ def process_df(df, country_filter=None):
     # eliminate the words 'Metropolian' and 'Area' from city names
     df.loc[:, 'City'] = df.loc[:, 'City'].map(lambda x: x.replace('Metropolitan', '').replace(
         'Area', '').replace('Region', '').replace('Community of', '').replace(
-        'Greater', '').replace('Lisboa', 'Lisbon').strip())
+        'Greater', '').replace('Lisboa', 'Lisbon').replace('Den Haag', 'The Hague').strip())
 
     df.loc[:, 'Country'] = df.loc[:, 'Country'].map(lambda x: str(x).strip())  # removing unnecessary spaces
 
@@ -258,9 +255,9 @@ def process_df(df, country_filter=None):
     # remaining data that the missing country is 'France'
     imputer = KNNImputer(n_neighbors=10)
     # converting missing values to strings
-    df = df.fillna('NaN')
+    df = df.fillna('nan')
     # saving indices of NaN
-    df_nan_index = df.loc[df.Country == 'NaN'].index
+    df_nan_index = df.loc[df.Country == 'nan'].index
 
     # encoding cities and countries, to apply the KKN Imputer
     # defining and fitting label encoder instances for City and Country
