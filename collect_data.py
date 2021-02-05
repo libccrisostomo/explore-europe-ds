@@ -15,9 +15,10 @@ import numpy as np
 def scrape_LI_page(username, password, keyword='Data Scientist', location='World',
                    experience_levels=('Entry level', 'Associate', 'Mid-Senior level',
                                       'Internship', 'Director', 'Executive'),
-                   max_page=None):
+                   max_page=None, filename='job_locations'):
     """ Opens a LinkedIn page, logs the user in, and initiates a job search with customizable keywords, location,
-    and experience levels (list of strings). Works for LI in english only. \n
+    and experience levels (list of strings). Works for LI in english only. Saves a txt file called job_locations.txt
+    \n
 
     :param username: username of the account
     :type username: str
@@ -27,7 +28,9 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
     :param location: job locations to include in search
     :param experience_levels: experience levels, available: ['Entry level', 'Associate', 'Mid-Senior level',
     'Internship', 'Director', 'Executive']. Selects all by default
-    :param max_page: int, maximum number of pages to scrape"""
+    :param max_page: int, maximum number of pages to scrape
+    :param filename: name of the txt file that will be saved
+    :type filename: str """
 
     # defining browser as chrome and starting page LinkedIn
 
@@ -156,7 +159,7 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
             print('Successfully retrieved ' + str(actual_page) + ' pages with locations of ' + str(
                 len(job_location_list)) + ' job offers.')
             # saving job_location_list to txt file
-            with open('job_locations.txt', 'w') as f:
+            with open(str(filename)+'.txt', 'w') as f:
                 for item in job_location_list:
                     try:
                         f.write("%s\n" % item)
