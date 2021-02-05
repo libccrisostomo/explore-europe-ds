@@ -96,6 +96,8 @@ def scrape_LI_page(username, password, keyword, location, experience_levels, max
     job_location_list = []  # to save all the locations
     pages_crawled = []  # to log which pages have been crawled already
     actual_page = 1  # starting page
+    browser.set_window_size(1000, 800)  # so that we can scroll down the page, that will only consist of the job offers,
+    # and not the right window with details about the selected job
 
     while actual_page <= max_page:
         print('Scrolling page ' + str(actual_page))
