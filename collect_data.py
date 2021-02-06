@@ -290,3 +290,4 @@ def process_df(df, country_filter=None):
         df = df.loc[df['Country'] == country_filter]
 
     return df
+
