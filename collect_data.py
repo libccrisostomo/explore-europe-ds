@@ -246,7 +246,7 @@ def process_df(df, country_filter=None):
     new_city = df.loc[:, 'City'].map(lambda x: x.replace('Metropolitan', '').replace('Area', '').replace(
         'Region', '').replace('Community of', '').replace('Greater', '').replace('Lisboa', 'Lisbon').replace(
         'Den Haag', 'The Hague').strip())
-    df = df.copy()
+    df = df.copy()  # to prevent raising SettingWithCopyError
     df.loc[:, 'City'] = new_city
     df.loc[:, 'Country'] = df.loc[:, 'Country'].map(lambda x: str(x).strip())  # removing unnecessary spaces
 
