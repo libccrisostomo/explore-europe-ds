@@ -243,10 +243,11 @@ def process_df(df, country_filter=None):
     df = df.loc[df.City != 'Remote']
 
     # eliminate the words 'Metropolian' and 'Area' from city names
-    df.loc[:, 'City'] = df.loc[:, 'City'].map(lambda x: x.replace('Metropolitan', '').replace(
-        'Area', '').replace('Region', '').replace('Community of', '').replace(
-        'Greater', '').replace('Lisboa', 'Lisbon').replace('Den Haag', 'The Hague').strip())
-
+    new_city = df.loc[:, 'City'].map(lambda x: x.replace('Metropolitan', '').replace('Area', '').replace(
+        'Region', '').replace('Community of', '').replace('Greater', '').replace('Lisboa', 'Lisbon').replace(
+        'Den Haag', 'The Hague').strip())
+    df = df.copy()
+    df.loc[:, 'City'] = new_city
     df.loc[:, 'Country'] = df.loc[:, 'Country'].map(lambda x: str(x).strip())  # removing unnecessary spaces
 
     # Remaining missing values in Country
