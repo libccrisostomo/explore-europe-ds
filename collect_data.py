@@ -10,6 +10,7 @@ from sklearn.impute import KNNImputer
 from sklearn import preprocessing
 import numpy as np
 
+pd.options.mode.chained_assignment = 'raise'
 
 def scrape_LI_page(username, password, keyword='Data Scientist', location='World',
                    experience_levels=('Entry level', 'Associate', 'Mid-Senior level',
