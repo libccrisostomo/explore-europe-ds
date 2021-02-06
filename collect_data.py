@@ -280,6 +280,10 @@ def process_df(df, country_filter=None):
     # if City = Country
     df = df.loc[df.City != df.Country]
 
+    # Sometime there is strange information in the 'City' column. I'm dropping every record that has a number in the
+    # city column
+    df = df[~df['City'].str.contains(r'\d', regex=True)]
+
     if country_filter:
         df = df.loc[df['Country'] == country_filter]
 

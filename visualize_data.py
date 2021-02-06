@@ -15,3 +15,6 @@ fig_nl.show()
 
 fig_at = px.sunburst(df_at, path=['Country', 'City'])
 fig_at.show()
+
+fig_irl = px.sunburst(df_irl, path=['Country', 'City'])
+fig_irl.show()

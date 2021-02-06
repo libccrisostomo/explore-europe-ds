@@ -12,9 +12,9 @@ df_de = process_df(df_de, 'Germany')
 
 df_nl = pd.read_csv('job_locations_NL.txt', header=None, encoding='ISO-8859-1')
 df_nl = process_df(df_nl, 'Netherlands')
-#
-# df_irl = pd.read_csv('job_locations_PT.txt', header=None, encoding='ISO-8859-1')
-# # df_irl = process_df(df_irl, 'Ireland')
+
+df_irl = pd.read_csv('job_locations_IRL.txt', header=None, encoding='ISO-8859-1')
+df_irl = process_df(df_irl, 'Ireland')
 
 df_at = pd.read_csv('job_locations_AT.txt', header=None, encoding='ISO-8859-1')
 df_at = process_df(df_at, 'Austria')
