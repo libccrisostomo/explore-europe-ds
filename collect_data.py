@@ -1,4 +1,4 @@
-# importing packages
+# importing libraries
 from selenium import webdriver
 import time
 from bs4 import BeautifulSoup
@@ -9,8 +9,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from sklearn.impute import KNNImputer
 from sklearn import preprocessing
 import numpy as np
+import plotly.express as px
 
 pd.options.mode.chained_assignment = 'raise'
+
 
 def scrape_LI_page(username, password, keyword='Data Scientist', location='World',
                    experience_levels=('Entry level', 'Associate', 'Mid-Senior level',
@@ -92,9 +94,6 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
     experience_dropdown = WebDriverWait(browser, 10).until(EC.element_to_be_clickable(
         (By.ID, buttons_list[13])))
     experience_dropdown.click()
-
-    # experience_dropdown = browser.find_element_by_id(buttons_list[13])
-    # experience_dropdown.click()
     time.sleep(2)
 
     # Get page source code
@@ -128,13 +127,14 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
     browser.set_window_size(1000, 800)  # so that we can scroll down a page that will only consist of the job offers
 
     # this loop scrapes the lob locations for every available page
+
     while actual_page <= max_page:
         # range starts at 2 because page 1 is default
         print('Scrolling page ' + str(actual_page))
         browser.execute_script("window.scrollTo(0, 0)")
         job_location_list = location_crawler(job_location_list, browser)
 
-        if int(pages[-3]) == actual_page:
+        if (int(pages[-3]) == actual_page) and (max_page - actual_page) != 3:
             # then we click '...' and land automatically on the next page
 
             ellipsis_page = browser.find_elements_by_xpath('//button[@type="button" and contains(., "…")]')[-1]
@@ -156,6 +156,9 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
             next_page = list(filter(lambda x: x.text == str(actual_page + 1), next_page))[0]
             next_page.click()
             time.sleep(2)
+            pages_displayed = browser.find_elements_by_xpath("//*[contains(@class, 'artdeco-pagination__indicator "
+                                                             "artdeco-pagination__indicator--number ember-view')]")
+            pages = [i.text for i in pages_displayed]
             print('Moving on to page ' + str(actual_page + 1) + '...')
 
         else:
@@ -164,7 +167,8 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
                 len(job_location_list)) + ' job offers.')
 
         # saving job_location_list to txt file
-        with open(str(filename) + '.txt', 'w') as f:
+        with open('.\\Data\\Raw .txt files\\'+str(filename) + '.txt', 'w') as f:
+            f.write('hello')
             for item in job_location_list:
                 try:
                     f.write("%s\n" % item)
@@ -215,10 +219,11 @@ def scrollDownAllTheWay(driver):
             old_page = new_page
         else:
             break
+    time.sleep(2)
     return True
 
 
-def process_df(df, country_filter=None):
+def process_df(df, country_filter=True):
     """ Processes the location list obtained by run.py. \n
     - Eliminates the Region of the location, keeping only City and Country
     - Imputes missing values (KNN Imputer w/ 10 neighbors)
@@ -279,15 +284,61 @@ def process_df(df, country_filter=None):
     df.loc[:, 'City'] = le_city.inverse_transform(df['City'])
     df.loc[:, 'Country'] = le_country.inverse_transform(df['Country'])
 
-    # if City = Country
+    # if City == Country, then the location of the record misses the city. I'm dropping these records
     df = df.loc[df.City != df.Country]
 
-    # Sometime there is strange information in the 'City' column. I'm dropping every record that has a number in the
-    # city column
+    # sometimes there is strange information in the 'City' column. I'm dropping every record with numbers in city name
     df = df[~df['City'].str.contains(r'\d', regex=True)]
 
-    if country_filter:
-        df = df.loc[df['Country'] == country_filter]
+    # filtering the df by the country of most occurrences. This prevents false locations to persist in the data
+    if country_filter and df.Country.nunique() <= 5:
+        df = df.loc[df['Country'] == df.Country.value_counts().index[0]]
 
     return df
+
+
+def join_locations(df_joined_locations, df):
+    """ Joins the locations of two dataframes with job locations. These DataFrames must have been returned
+     by the process_data.pt \n
+    :param df_joined_locations: A dataframe with columns 'City','Country' and 'Number of jobs'
+    :type df: dataframe to merge with df_joined_locations
+    :return: pandas DataFrame with the joined locations from df_joined_locations and df"""
+    df_joined = pd.concat([df_joined_locations, pd.merge(df.drop_duplicates(), df.groupby(
+        by='City').count().rename(columns={'Country': 'Number of jobs'}), on='City')])
+    return df_joined
+
+
+def plot_sunburst(df, show=True, save=None, location='unspecified location'):
+    """ Produces a Plotly sunburst plot for df. The plot can be saved, and shown. \n
+    :param show: True or False, value to determine if the plot should be saved
+    :param save: Defaults to 'None'. If indicated, should be one out of these options: ['html','png','jpeg','pdf','webp']
+    :param df: DataFrame returned by the function process_df in process_data.py
+    :param location: Location of the data origin, to save the plot with an appropriate filename
+    """
+    fig = px.sunburst(df, path=['Country', 'City'])
+    if show:
+        fig.show()
+    if save:
+        fig.write_html('.//Results//' + 'Plot of job locations in ' + location + '.' + save)
+        print('Saved sunburst plot for job locations in ' + location + ' as ' + save + ' file')
+
+
+def plot_scatter(df, show=True, save=None):
+    """ Produces a Plotly scatter plot for a DataFrame returned by process_data.py, combined with some extra information
+    regarding average salary, cost of living + rent index, and number of jobs of the data in question. The extra
+    information is obtained from the file CostOfLiving_AvgSalary.xlsx from the Sample Data folder. \n
+    :param show: True or False, value to determine if the plot should be saved
+    :param save: Defaults to 'None'. If indicated, should be one out of these options: ['html','png','jpeg','pdf','webp']
+    :param df: DataFrame returned by the function join_locations (with locations of jobs from multiple searches)
+    """
+    cost_of_living_avg_salary_df = pd.read_excel('.\\Data\\Extra Information\\CostOfLiving_AvgSalary.xlsx', index_col=0)
+    df_all_info = pd.merge(cost_of_living_avg_salary_df, df, how='inner', on='City')
+
+    fig = px.scatter(df_all_info, x="Average Monthly Net Salary", y="Cost of Living Plus Rent Index",
+                     size="Number of jobs", hover_name="City", color='Country', log_x=True, size_max=60)
+    if show:
+        fig.show()
+    if save:
+        fig.write_html('.//Results//' + 'Scatter plot' + '.' + save)
+        print('Saved scatter plot as ' + save + ' file')
 

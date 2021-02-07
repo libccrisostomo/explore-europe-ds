@@ -1,20 +1,22 @@
 import plotly.express as px
-from process_data import *
+import os
+import pandas as pd
+from collect_data import plot_sunburst
+from collect_data import plot_scatter
+from collect_data import join_locations
 
-fig_eu = px.sunburst(df_eu, path=['Country', 'City'])
-fig_eu.show()
+# This file returns sunburst plots for each file in the folder 'Processed .xlsx files' and saves them to 'Results'
+df_joined_locations = None # will be used in next plot
+origin_directory = '.\\Data\\Processed .xlsx files'
+filename = 'job_locations_NL.xlsx'
+for filename in os.listdir(origin_directory):
+    df = pd.read_excel(origin_directory + '\\' + filename, header=0, index_col=0)
+    # will be used in next plot
+    if df_joined_locations is None:
+        df_joined_locations = df
+    else:
+        df_joined_locations = join_locations(df_joined_locations, df)
+    plot_sunburst(df, show=False, save=None, location=filename[-7:-5])
 
-fig_pt = px.sunburst(df_pt, path=['Country', 'City'])
-fig_pt.show()
-
-fig_de = px.sunburst(df_de, path=['Country', 'City'])
-fig_de.show()
-
-fig_nl = px.sunburst(df_nl, path=['Country', 'City'])
-fig_nl.show()
-
-fig_at = px.sunburst(df_at, path=['Country', 'City'])
-fig_at.show()
-
-fig_irl = px.sunburst(df_irl, path=['Country', 'City'])
-fig_irl.show()
+# Plot with average salary, cost of living, and number of jobs per city
+plot_scatter(df_joined_locations, show=True, save='html')
