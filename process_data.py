@@ -13,3 +13,4 @@ for filename in os.listdir(origin_directory):
     df.to_excel('.\\Data\\Processed .xlsx files\\' + filename[:-4] + '.xlsx')
     print('Processed the file ' + filename + ' and saved as ' + filename[:-4] + '.xlsx')
 
+del filename, origin_directory, df

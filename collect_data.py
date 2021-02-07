@@ -332,9 +332,9 @@ def plot_scatter(df, show=True, save=None):
     :param df: DataFrame returned by the function join_locations (with locations of jobs from multiple searches)
     """
     cost_of_living_avg_salary_df = pd.read_excel('.\\Data\\Extra Information\\CostOfLiving_AvgSalary.xlsx', index_col=0)
-    df_all_info = pd.merge(cost_of_living_avg_salary_df, df, how='inner', on='City')
+    df_all_info = pd.merge(cost_of_living_avg_salary_df, df.drop('Country', axis=1), how='inner', on='City')
 
-    fig = px.scatter(df_all_info, x="Average Monthly Net Salary", y="Cost of Living Plus Rent Index",
+    fig = px.scatter(df_all_info, y="Average Monthly Net Salary", x="Cost of Living Plus Rent Index",
                      size="Number of jobs", hover_name="City", color='Country', log_x=True, size_max=60)
     if show:
         fig.show()
