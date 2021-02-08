@@ -16,9 +16,10 @@ for filename in os.listdir(origin_directory):
             by='City').count().rename(columns={'Country': 'Number of jobs'}), on='City')
     elif filename[-7:-5] != 'EU':  # this is for my personalized sample
         df_joined_locations = join_locations(df_joined_locations, df)
-    plot_sunburst(df, show=True, save=False, location=filename[filename.rfind('_')+1:filename.rfind('.')], template='plotly_dark')
+    plot_sunburst(df, show=True, save=False, location=filename[filename.rfind('_')+1:filename.rfind('.')],
+                  template='plotly_dark', transparent_bg=True)
 
 # Plot with average salary, cost of living, and number of jobs per city
-plot_scatter(df_joined_locations, show=True, save=True, min_jobs=10, text=False, template='plotly_dark')
+plot_scatter(df_joined_locations, show=True, save=True, min_jobs=10, text=False, template='plotly_dark', transparent_bg=True)
 
 del df, df_joined_locations, origin_directory, filename

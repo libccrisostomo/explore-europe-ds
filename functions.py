@@ -309,22 +309,25 @@ def join_locations(df_joined_locations, df):
     return df_joined
 
 
-def plot_sunburst(df, show=True, save=False, location='unspecified location', template='plotly'):
+def plot_sunburst(df, show=True, save=False, location='unspecified location', template='plotly', transparent_bg=False):
     """ Produces a Plotly sunburst plot for df. The plot can be saved, and shown. \n
     :param template: plotly template
     :param show: if True, plot will be show in browser. Defaults to True
     :param save: if True, plot will be saved to 'Plots' folder as html. Defaults to False
     :param df: DataFrame returned by the function process_df in process_data.py
     :param location: Location of the data origin, to save the plot with an appropriate filename
+    :param transparent_bg: if True, the background of the plot is transparent
 
     """
 
     fig = px.sunburst(df, path=['Country', 'City'], template=template)
     fig.update_layout(title_text='Job locations in ' + location, title_x=0.5)
-    fig.update_layout({
-        'plot_bgcolor': 'rgba(0, 0, 0, 0)',
-        'paper_bgcolor': 'rgba(0, 0, 0, 0)',
-    })
+
+    if transparent_bg:
+        fig.update_layout({
+            'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+            'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+        })
 
     if show:
         fig.show()
@@ -333,16 +336,18 @@ def plot_sunburst(df, show=True, save=False, location='unspecified location', te
         print('Saved sunburst plot for job locations in ' + location + ' as html file')
 
 
-def plot_scatter(df, show=True, save=False, min_jobs=10, text=False, template='plotly'):
+def plot_scatter(df, show=True, save=False, min_jobs=10, text=False, template='plotly', transparent_bg=False):
     """ Produces a Plotly scatter plot for a DataFrame returned by process_data.py, combined with some extra information
     regarding average salary, cost of living + rent index, and number of jobs of the data in question. The extra
     information is obtained from the file CostOfLiving_AvgSalary.xlsx from the Sample Data folder. \n
-    :param template: plotly template
-    :param text: if True, City names will be added as annotation
+    :param transparent_bg: if True, the background of the plot is transparent
     :param show: if True, plot will be show in browser. Defaults to True
     :param save: if True, plot will be saved to 'Plots' folder as html. Defaults to False
     :param df: DataFrame returned by the function join_locations (with locations of jobs from multiple searches). df_joined_locations defined visualize_data.py
     :param min_jobs: drops cities with less jobs than value
+    :param text: if True, City names will be added as annotation
+    :param template: plotly template
+    :param transparent_bg: if True, the background of the plot is transparent
     """
     cost_of_living_avg_salary_df = pd.read_excel('.\\Data\\Extra Information\\CostOfLiving_AvgSalary.xlsx', index_col=0)
     df_all_info = pd.merge(cost_of_living_avg_salary_df, df.drop('Country', axis=1), how='inner', on='City')
@@ -365,6 +370,12 @@ def plot_scatter(df, show=True, save=False, min_jobs=10, text=False, template='p
                        font={'color': 'magenta'}
                        )
     fig.update_layout(title_text='Cost of living vs. Average salary vs. Number of jobs', title_x=0.5)
+
+    if transparent_bg:
+        fig.update_layout({
+            'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+            'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+        })
 
     if show:
         fig.show()
