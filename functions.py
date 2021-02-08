@@ -42,8 +42,8 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
     if experience_levels is None:
         experience_levels = ['Entry level', 'Associate', 'Mid-Senior level',
                              'Internship', 'Director', 'Executive']
-    browser = webdriver.Chrome(executable_path='C:/Users/ASUS/Documents/GitHub/explore-europe-ds/Chromedriver'
-                                               '/chromedriver')
+
+    browser = webdriver.Chrome(executable_path='./Chromedriver/chromedriver')
 
     # Open login page
     browser.get('https://www.linkedin.com/login?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin')
@@ -199,7 +199,7 @@ def scrollDown(driver, value):
     """ Scrolls down a page at a quantity of 'value'
     :param driver: webdriver instance
     :param value: scroll quantity indicator
-    :type value:
+    :type value: int
     """
     driver.execute_script("window.scrollBy(0," + str(value) + ")")
 
@@ -224,14 +224,15 @@ def scrollDownAllTheWay(driver):
 
 
 def process_df(df, country_filter=True):
-    """ Processes the location list obtained by run.py. \n
+    """ Processes the location list obtained by scrape_data.py. \n
     - Eliminates the Region of the location, keeping only City and Country
     - Imputes missing values (KNN Imputer w/ 10 neighbors)
     - Uniformizes different notations of city names
     - Eliminates records with location 'Remote'
     - Filters records by country if desired
-    :param df: txt file obtained by run.py
-    :param country_filter: str of a country to filter by, default None
+    :param df: dataframe of a txt file obtained by scrape_data.py
+    :param country_filter: a country to filter by, default None
+    :type country_filter: str
     :return: pandas DataFrame with processed locations"""
 
     # importing job location data
@@ -247,7 +248,7 @@ def process_df(df, country_filter=True):
     # If the City name is = 'remote', then there is no location for the job
     df = df.loc[df.City != 'Remote']
 
-    # eliminate the words 'Metropolian' and 'Area' from city names
+    # eliminate the words 'Metropolian' and 'Area' from city names, as well as some enhancements I manually saw
     new_city = df.loc[:, 'City'].map(lambda x: x.replace('Metropolitan', '').replace('Area', '').replace(
         'Region', '').replace('Community of', '').replace('Greater', '').replace('Lisboa', 'Lisbon').replace(
         'Den Haag', 'The Hague').strip())
@@ -302,35 +303,36 @@ def join_locations(df_joined_locations, df):
      by the process_data.pt \n
     :param df_joined_locations: A dataframe with columns 'City','Country' and 'Number of jobs'
     :type df: dataframe to merge with df_joined_locations
-    :return: pandas DataFrame with the joined locations from df_joined_locations and df"""
+    :return: pandas DataFrame with the joined locations from df_joined_locations and df """
     df_joined = pd.concat([df_joined_locations, pd.merge(df.drop_duplicates(), df.groupby(
         by='City').count().rename(columns={'Country': 'Number of jobs'}), on='City')])
     return df_joined
 
 
-def plot_sunburst(df, show=True, save=None, location='unspecified location'):
+def plot_sunburst(df, show=True, save=False, location='unspecified location'):
     """ Produces a Plotly sunburst plot for df. The plot can be saved, and shown. \n
-    :param show: True or False, value to determine if the plot should be saved
-    :param save: Defaults to 'None'. If indicated, should be one out of these options: ['html','png','jpeg','pdf','webp']
+    :param show: if True, plot will be show in browser. Defaults to True
+    :param save: if True, plot will be saved to 'Results' folder as html. Defaults to False
     :param df: DataFrame returned by the function process_df in process_data.py
     :param location: Location of the data origin, to save the plot with an appropriate filename
+
     """
     fig = px.sunburst(df, path=['Country', 'City'])
     if show:
         fig.show()
     if save:
-        fig.write_html('.//Results//' + 'Plot of job locations in ' + location + '.' + save)
-        print('Saved sunburst plot for job locations in ' + location + ' as ' + save + ' file')
+        fig.write_html('.//Results//' + 'Plot of job locations in ' + location + '.html')
+        print('Saved sunburst plot for job locations in ' + location + ' as html file')
 
 
-def plot_scatter(df, show=True, save=None, min_jobs=10):
+def plot_scatter(df, show=True, save=False, min_jobs=10):
     """ Produces a Plotly scatter plot for a DataFrame returned by process_data.py, combined with some extra information
     regarding average salary, cost of living + rent index, and number of jobs of the data in question. The extra
     information is obtained from the file CostOfLiving_AvgSalary.xlsx from the Sample Data folder. \n
-    :param show: True or False, value to determine if the plot should be saved
-    :param save: Defaults to 'None'. If indicated, should be one out of these options: ['html','png','jpeg','pdf','webp']
+    :param show: if True, plot will be show in browser. Defaults to True
+    :param save: if True, plot will be saved to 'Results' folder as html. Defaults to False
     :param df: DataFrame returned by the function join_locations (with locations of jobs from multiple searches). df_joined_locations defined visualize_data.py
-    :param min_jobs: Drops Cities with less jobs than value
+    :param min_jobs: drops cities with less jobs than value
     """
     cost_of_living_avg_salary_df = pd.read_excel('.\\Data\\Extra Information\\CostOfLiving_AvgSalary.xlsx', index_col=0)
     df_all_info = pd.merge(cost_of_living_avg_salary_df, df.drop('Country', axis=1), how='inner', on='City')
@@ -353,6 +355,7 @@ def plot_scatter(df, show=True, save=None, min_jobs=10):
 
     if show:
         fig.show()
+
     if save:
-        fig.write_html('.//Results//' + 'Scatter plot' + '.' + save)
-        print('Saved scatter plot as ' + save + ' file')
+        fig.write_html('.//Results//' + 'Scatter plot' + '.html')
+        print('Saved scatter plot as html file')

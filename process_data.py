@@ -10,7 +10,8 @@ filename = 'job_locations_EU.txt'
 for filename in os.listdir(origin_directory):
     df = pd.read_csv(origin_directory + '\\' + filename, header=None, encoding='ISO-8859-1')
     df = process_df(df, country_filter=True)
-    df.to_excel('.\\Data\\Processed .xlsx files\\' + filename[:-4] + '.xlsx')
-    print('Processed the file ' + filename + ' and saved as ' + filename[:-4] + '.xlsx')
+    df.to_excel('.\\Data\\Processed .xlsx files\\' + filename[:filename.rfind('.')] + '.xlsx')
+    print('Processed the file ' + filename + ' and saved as ' + filename[:filename.rfind('.')] + '.xlsx')
 
 del filename, origin_directory, df
+
