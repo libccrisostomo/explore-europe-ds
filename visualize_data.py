@@ -7,6 +7,7 @@ from functions import join_locations
 # This file returns sunburst plots for each file in the folder 'Processed .xlsx files' and saves them to 'Plots'
 df_joined_locations = None  # will be used in next plot
 origin_directory = '.\\Data\\Processed .xlsx files'
+filename='job_locations_EU.xlsx'
 for filename in os.listdir(origin_directory):
     df = pd.read_excel(origin_directory + '\\' + filename, header=0, index_col=0)
     # will be used in next plot
@@ -15,9 +16,9 @@ for filename in os.listdir(origin_directory):
             by='City').count().rename(columns={'Country': 'Number of jobs'}), on='City')
     elif filename[-7:-5] != 'EU':  # this is for my personalized sample
         df_joined_locations = join_locations(df_joined_locations, df)
-    plot_sunburst(df, show=True, save=False, location=filename[filename.rfind('_')+1:filename.rfind('.')])
+    plot_sunburst(df, show=True, save=False, location=filename[filename.rfind('_')+1:filename.rfind('.')], template='plotly_dark')
 
 # Plot with average salary, cost of living, and number of jobs per city
-plot_scatter(df_joined_locations, show=True, save=True, min_jobs=10, text=False)
+plot_scatter(df_joined_locations, show=True, save=True, min_jobs=10, text=False, template='plotly_dark')
 
 del df, df_joined_locations, origin_directory, filename

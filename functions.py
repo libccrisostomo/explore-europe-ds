@@ -309,8 +309,9 @@ def join_locations(df_joined_locations, df):
     return df_joined
 
 
-def plot_sunburst(df, show=True, save=False, location='unspecified location'):
+def plot_sunburst(df, show=True, save=False, location='unspecified location', template='plotly'):
     """ Produces a Plotly sunburst plot for df. The plot can be saved, and shown. \n
+    :param template: plotly template
     :param show: if True, plot will be show in browser. Defaults to True
     :param save: if True, plot will be saved to 'Plots' folder as html. Defaults to False
     :param df: DataFrame returned by the function process_df in process_data.py
@@ -318,8 +319,12 @@ def plot_sunburst(df, show=True, save=False, location='unspecified location'):
 
     """
 
-    fig = px.sunburst(df, path=['Country', 'City'])
+    fig = px.sunburst(df, path=['Country', 'City'], template=template)
     fig.update_layout(title_text='Job locations in ' + location, title_x=0.5)
+    fig.update_layout({
+        'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+        'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+    })
 
     if show:
         fig.show()
@@ -328,10 +333,11 @@ def plot_sunburst(df, show=True, save=False, location='unspecified location'):
         print('Saved sunburst plot for job locations in ' + location + ' as html file')
 
 
-def plot_scatter(df, show=True, save=False, min_jobs=10, text=False):
+def plot_scatter(df, show=True, save=False, min_jobs=10, text=False, template='plotly'):
     """ Produces a Plotly scatter plot for a DataFrame returned by process_data.py, combined with some extra information
     regarding average salary, cost of living + rent index, and number of jobs of the data in question. The extra
     information is obtained from the file CostOfLiving_AvgSalary.xlsx from the Sample Data folder. \n
+    :param template: plotly template
     :param text: if True, City names will be added as annotation
     :param show: if True, plot will be show in browser. Defaults to True
     :param save: if True, plot will be saved to 'Plots' folder as html. Defaults to False
@@ -343,7 +349,8 @@ def plot_scatter(df, show=True, save=False, min_jobs=10, text=False):
     df_all_info = df_all_info.loc[df_all_info['Number of jobs'] >= min_jobs]
 
     fig = px.scatter(df_all_info, y='Average Monthly Net Salary', x='Cost of Living Plus Rent Index',
-                     size='Number of jobs', hover_name='City', color='Country', log_x=True, size_max=60, text='City' if text else None,
+                     size='Number of jobs', hover_name='City', color='Country', log_x=True, size_max=60,
+                     text='City' if text else None, template=template,
                      )
     fig.update_traces(textposition='middle center')
     fig.add_annotation(x=1.49, y=4100,
@@ -352,8 +359,8 @@ def plot_scatter(df, show=True, save=False, min_jobs=10, text=False):
                        arrowhead=1,
                        xanchor='left',
                        yanchor='auto',
-                       ax = 6,
-                       ay = 3950,
+                       ax=6,
+                       ay=3950,
                        ayref='y',
                        font={'color': 'magenta'}
                        )
@@ -365,4 +372,3 @@ def plot_scatter(df, show=True, save=False, min_jobs=10, text=False):
     if save:
         fig.write_html('.//Plots//' + 'Scatter plot' + '.html')
         print('Saved scatter plot as html file')
-
