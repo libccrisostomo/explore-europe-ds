@@ -18,6 +18,6 @@ Scatter plot, displaying Cities with at least 25 job offers: <p>
   <p>
 Sunburst plot for job offers in the European Union:
 
-![Sunburst Plot EU](./Plots/Sunburst_plot_EU.png =250x)
+![Sunburst Plot EU](./Plots/Sunburst_plot_EU.png =250x250)
 
 <p>
