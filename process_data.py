@@ -1,5 +1,5 @@
 import pandas as pd
-from collect_data import process_df
+from functions import process_df
 import os
 
 # This file transforms the files from the folder 'Raw .txt files' into processed Excel files, which will be saved

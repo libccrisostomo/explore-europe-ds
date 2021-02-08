@@ -1,14 +1,12 @@
-import plotly.express as px
 import os
 import pandas as pd
-from collect_data import plot_sunburst
-from collect_data import plot_scatter
-from collect_data import join_locations
+from functions import plot_sunburst
+from functions import plot_scatter
+from functions import join_locations
 
 # This file returns sunburst plots for each file in the folder 'Processed .xlsx files' and saves them to 'Results'
 df_joined_locations = None  # will be used in next plot
 origin_directory = '.\\Data\\Processed .xlsx files'
-filename='job_locations_EU.xlsx'
 for filename in os.listdir(origin_directory):
     df = pd.read_excel(origin_directory + '\\' + filename, header=0, index_col=0)
     # will be used in next plot

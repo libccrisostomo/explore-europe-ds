@@ -167,7 +167,7 @@ def scrape_LI_page(username, password, keyword='Data Scientist', location='World
                 len(job_location_list)) + ' job offers.')
 
         # saving job_location_list to txt file
-        with open('.\\Data\\Raw .txt files\\'+str(filename) + '.txt', 'w') as f:
+        with open('.\\Data\\Raw .txt files\\' + str(filename) + '.txt', 'w') as f:
             f.write('hello')
             for item in job_location_list:
                 try:
@@ -323,22 +323,36 @@ def plot_sunburst(df, show=True, save=None, location='unspecified location'):
         print('Saved sunburst plot for job locations in ' + location + ' as ' + save + ' file')
 
 
-def plot_scatter(df, show=True, save=None):
+def plot_scatter(df, show=True, save=None, min_jobs=10):
     """ Produces a Plotly scatter plot for a DataFrame returned by process_data.py, combined with some extra information
     regarding average salary, cost of living + rent index, and number of jobs of the data in question. The extra
     information is obtained from the file CostOfLiving_AvgSalary.xlsx from the Sample Data folder. \n
     :param show: True or False, value to determine if the plot should be saved
     :param save: Defaults to 'None'. If indicated, should be one out of these options: ['html','png','jpeg','pdf','webp']
-    :param df: DataFrame returned by the function join_locations (with locations of jobs from multiple searches)
+    :param df: DataFrame returned by the function join_locations (with locations of jobs from multiple searches). df_joined_locations defined visualize_data.py
+    :param min_jobs: Drops Cities with less jobs than value
     """
     cost_of_living_avg_salary_df = pd.read_excel('.\\Data\\Extra Information\\CostOfLiving_AvgSalary.xlsx', index_col=0)
     df_all_info = pd.merge(cost_of_living_avg_salary_df, df.drop('Country', axis=1), how='inner', on='City')
+    df_all_info = df_all_info.loc[df_all_info['Number of jobs'] >= min_jobs]
 
     fig = px.scatter(df_all_info, y="Average Monthly Net Salary", x="Cost of Living Plus Rent Index",
-                     size="Number of jobs", hover_name="City", color='Country', log_x=True, size_max=60)
+                     size="Number of jobs", hover_name="City", color='Country', log_x=True, size_max=60
+                     )
+
+    fig.update_traces(textposition='top center')
+
+    fig.add_annotation(x=1.49, y=4100,
+                       text="Where dinheiro is papel",
+                       showarrow=True,
+                       arrowhead=1,
+                       xanchor="left",
+                       yanchor="bottom",
+                       font={'color': 'magenta'}
+                       )
+
     if show:
         fig.show()
     if save:
         fig.write_html('.//Results//' + 'Scatter plot' + '.' + save)
         print('Saved scatter plot as ' + save + ' file')
-

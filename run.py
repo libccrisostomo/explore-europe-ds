@@ -1,4 +1,4 @@
-from collect_data import scrape_LI_page
+from functions import scrape_LI_page
 
 scrape_LI_page(username='laura.ibcc98@gmail.com',
                password='helloworld',
