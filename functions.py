@@ -312,7 +312,7 @@ def join_locations(df_joined_locations, df):
 def plot_sunburst(df, show=True, save=False, location='unspecified location'):
     """ Produces a Plotly sunburst plot for df. The plot can be saved, and shown. \n
     :param show: if True, plot will be show in browser. Defaults to True
-    :param save: if True, plot will be saved to 'Results' folder as html. Defaults to False
+    :param save: if True, plot will be saved to 'Plots' folder as html. Defaults to False
     :param df: DataFrame returned by the function process_df in process_data.py
     :param location: Location of the data origin, to save the plot with an appropriate filename
 
@@ -321,7 +321,7 @@ def plot_sunburst(df, show=True, save=False, location='unspecified location'):
     if show:
         fig.show()
     if save:
-        fig.write_html('.//Results//' + 'Plot of job locations in ' + location + '.html')
+        fig.write_html('.//Plots//' + 'Plot of job locations in ' + location + '.html')
         print('Saved sunburst plot for job locations in ' + location + ' as html file')
 
 
@@ -330,7 +330,7 @@ def plot_scatter(df, show=True, save=False, min_jobs=10):
     regarding average salary, cost of living + rent index, and number of jobs of the data in question. The extra
     information is obtained from the file CostOfLiving_AvgSalary.xlsx from the Sample Data folder. \n
     :param show: if True, plot will be show in browser. Defaults to True
-    :param save: if True, plot will be saved to 'Results' folder as html. Defaults to False
+    :param save: if True, plot will be saved to 'Plots' folder as html. Defaults to False
     :param df: DataFrame returned by the function join_locations (with locations of jobs from multiple searches). df_joined_locations defined visualize_data.py
     :param min_jobs: drops cities with less jobs than value
     """
@@ -357,5 +357,5 @@ def plot_scatter(df, show=True, save=False, min_jobs=10):
         fig.show()
 
     if save:
-        fig.write_html('.//Results//' + 'Scatter plot' + '.html')
+        fig.write_html('.//Plots//' + 'Scatter plot' + '.html')
         print('Saved scatter plot as html file')

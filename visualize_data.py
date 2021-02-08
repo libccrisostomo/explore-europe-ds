@@ -4,7 +4,7 @@ from functions import plot_sunburst
 from functions import plot_scatter
 from functions import join_locations
 
-# This file returns sunburst plots for each file in the folder 'Processed .xlsx files' and saves them to 'Results'
+# This file returns sunburst plots for each file in the folder 'Processed .xlsx files' and saves them to 'Plots'
 df_joined_locations = None  # will be used in next plot
 origin_directory = '.\\Data\\Processed .xlsx files'
 for filename in os.listdir(origin_directory):
