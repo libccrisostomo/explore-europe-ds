@@ -8,16 +8,17 @@ Executing _scrape_data.py_ will gather job offer locations from a personalized s
 
 1. Executed _scrape_data.py_ with keyword 'Data Scientist' for each of the following location: Austria, Denmark, France, Germany, Ireland, Italy, Netherlands, Portugal and European Union.
 2. Ran _process_data.pt__
-3. Ran _visualize_data.py_ with personalized parameters, in order to show and save the resulting plots (to 'Results' folder, as html) 
+3. Ran _visualize_data.py_ with personalized parameters, in order to show and save the resulting plots (to 'Results' folder, as html) <p>
 
+<p>
   
-Scatter plot, displaying Cities with at least 25 job offers: <br>
+Scatter plot, displaying Cities with at least 25 job offers: <p>
 ![Sunburst Plot EU](./Plots/Scatter_plot.png)
 
-<br>
-<br>
+<p>
+<p>
           
-Sunburst plot for job offers in the European Union: <br>
+Sunburst plot for job offers in the European Union: <p>
 
 ![Sunburst Plot EU](./Plots/Sunburst_plot_EU.png)
 
