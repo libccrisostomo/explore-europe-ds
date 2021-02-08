@@ -14,12 +14,7 @@ Executing _scrape_data.py_ will gather job offer locations from a personalized s
 Scatter plot, displaying Cities with at least 25 job offers: <p>
 ![Sunburst Plot EU](./Plots/Scatter_plot.png)
 
-<p>
-  <p>
-    <p>
-      <p>
-        <p>
-          <br>
+<br>
           
 Sunburst plot for job offers in the European Union:
 
