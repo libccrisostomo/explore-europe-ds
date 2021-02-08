@@ -23,7 +23,7 @@ On the x-axis we have a cost of living + rent index, and on the y-axis the avera
 <br>
 <br>
           
-### Sunburst plot for 'Data Scientist' entry-level job offers in the European Union: <p>
+### Sunburst plot for 'Data Scientist' entry-level job offer locations in the European Union: <p>
 This plot shows the occurrence proportions in the job locations for each country/city. <p>
   
 ![Sunburst Plot EU](./Plots/Sunburst_plot_EU.png)
