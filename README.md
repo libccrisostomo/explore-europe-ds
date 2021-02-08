@@ -7,7 +7,7 @@ Executing _scrape_data.py_ will gather job offer locations from a personalized s
 ## Sample results:
 
 1. Execute _scrape_data.py_ with keyword 'Data Scientist' for each of the following locations: Austria, Denmark, France, Germany, Ireland, Italy, Netherlands, Portugal and European Union.
-2. Run _process_data.pt_
+2. Run _process_data.py_
 3. Run _visualize_data.py_ with personalized parameters, in order to show and save the resulting plots (to 'Results' folder, as html) <br>
   This script also joins the processed job location files into one pandas DataFrame, which is visualized in the Scatter plot. To prevent duplicated job locations, this script automatically excludes the job locations from the European Union file, since all of the information in this file is also contained in the Country specified files. <p>
 
