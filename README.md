@@ -15,7 +15,7 @@ Of course, the Plotly plots can be interacted with. The following images are mer
 <p>
   
 ### Scatter plot, displaying Cities with at least 25 'Data Scientist' entry-level job offers: 
-On the x-axis we have a cost of living + rent index, and on the y-axis the average salary. <p>
+On the x-axis we have a cost of living + rent index, and on the y-axis the average salary. The size of the bubbles indicated the found quantity of jobs in the respective city.<p>
   
 ![Sunburst Plot EU](./Plots/Scatter_plot.png)
 
