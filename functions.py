@@ -317,7 +317,7 @@ def plot_sunburst(df, show=True, save=False, location='unspecified location'):
     :param location: Location of the data origin, to save the plot with an appropriate filename
 
     """
-    fig = px.sunburst(df, path=['Country', 'City'])
+    fig = px.sunburst(df, path=['Country', 'City'], title='Job locations in ' + location)
     if show:
         fig.show()
     if save:
