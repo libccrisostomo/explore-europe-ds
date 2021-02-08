@@ -21,6 +21,9 @@ Interactive plot:
 
 [link](./Plots/Plot_job_locations_EU.html){:target="_blank"}
 
+<script>
+  location.href = './Plots/Plot_job_locations_EU.html'
+</script>
   
 ![Sunburst Plot EU](./Plots/Scatter_plot.png)
 
