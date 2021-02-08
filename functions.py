@@ -317,7 +317,10 @@ def plot_sunburst(df, show=True, save=False, location='unspecified location'):
     :param location: Location of the data origin, to save the plot with an appropriate filename
 
     """
-    fig = px.sunburst(df, path=['Country', 'City'], title='Job locations in ' + location)
+
+    fig = px.sunburst(df, path=['Country', 'City'])
+    fig.update_layout(title_text='Job locations in ' + location, title_x=0.5)
+
     if show:
         fig.show()
     if save:
@@ -325,10 +328,11 @@ def plot_sunburst(df, show=True, save=False, location='unspecified location'):
         print('Saved sunburst plot for job locations in ' + location + ' as html file')
 
 
-def plot_scatter(df, show=True, save=False, min_jobs=10):
+def plot_scatter(df, show=True, save=False, min_jobs=10, text=False):
     """ Produces a Plotly scatter plot for a DataFrame returned by process_data.py, combined with some extra information
     regarding average salary, cost of living + rent index, and number of jobs of the data in question. The extra
     information is obtained from the file CostOfLiving_AvgSalary.xlsx from the Sample Data folder. \n
+    :param text: if True, City names will be added as annotation
     :param show: if True, plot will be show in browser. Defaults to True
     :param save: if True, plot will be saved to 'Plots' folder as html. Defaults to False
     :param df: DataFrame returned by the function join_locations (with locations of jobs from multiple searches). df_joined_locations defined visualize_data.py
@@ -338,20 +342,22 @@ def plot_scatter(df, show=True, save=False, min_jobs=10):
     df_all_info = pd.merge(cost_of_living_avg_salary_df, df.drop('Country', axis=1), how='inner', on='City')
     df_all_info = df_all_info.loc[df_all_info['Number of jobs'] >= min_jobs]
 
-    fig = px.scatter(df_all_info, y="Average Monthly Net Salary", x="Cost of Living Plus Rent Index",
-                     size="Number of jobs", hover_name="City", color='Country', log_x=True, size_max=60
+    fig = px.scatter(df_all_info, y='Average Monthly Net Salary', x='Cost of Living Plus Rent Index',
+                     size='Number of jobs', hover_name='City', color='Country', log_x=True, size_max=60, text='City' if text else None,
                      )
-
-    fig.update_traces(textposition='top center')
-
+    fig.update_traces(textposition='middle center')
     fig.add_annotation(x=1.49, y=4100,
-                       text="Where dinheiro is papel",
+                       text='Where dinheiro is papel',
                        showarrow=True,
                        arrowhead=1,
-                       xanchor="left",
-                       yanchor="bottom",
+                       xanchor='left',
+                       yanchor='auto',
+                       ax = 6,
+                       ay = 3950,
+                       ayref='y',
                        font={'color': 'magenta'}
                        )
+    fig.update_layout(title_text='Cost of living vs. Average salary vs. Number of jobs', title_x=0.5)
 
     if show:
         fig.show()
@@ -359,3 +365,4 @@ def plot_scatter(df, show=True, save=False, min_jobs=10):
     if save:
         fig.write_html('.//Plots//' + 'Scatter plot' + '.html')
         print('Saved scatter plot as html file')
+
