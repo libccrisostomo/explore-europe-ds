@@ -13,8 +13,7 @@ Executing _scrape_data.py_ will gather job offer locations from a personalized s
 
 Of course, the Plotly plots can be interacted with. The following images are mere screenshots of some of the results:
 <br> 
-<br> 
-<br> 
+<hr> 
   
 ### Scatter plot, displaying Cities with at least 25 'Data Scientist' entry-level job offers: 
 On the x-axis we have a cost of living + rent index, and on the y-axis the average salary. The size of the bubbles indicates the found quantity of jobs in the respective city.<p>
