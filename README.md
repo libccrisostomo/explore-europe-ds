@@ -2,7 +2,7 @@
 
 This repositry contains a set of scripts that will scrape a LinkedIn page for job offer locations, process the data, and visualize it. 
 
-Executing _scrape_data.py_ will gather job offer locations from a personalized search of a LinkedIn page. Required arguments include username and password, search keys and location can be personalized. The results will be saved in a file called job_locations.txt, in the folder 'Data\Raw .txt files'. The execution of the script _process_data.py_ will process and clean the files in the previous directory, and save the results to 'Data\Processed .xlsx files'. Finally, the data can be visualized by executing _visualize_data.py_, which will produce Plotly sunburst plots for each file in the previous directory, and a scatter plot with the joined data from various searches with some extra information.
+Executing _scrape_data.py_ will gather job offer locations from a personalized search of a LinkedIn page. Required arguments include username and password, other arguments, such as search keys and location, can be personalized. The results will be saved in the folder 'Data\Raw .txt files'. The execution of the script _process_data.py_ will process and clean all files in the previous directory, and save the results to 'Data\Processed .xlsx files'. Finally, the data can be visualized by executing _visualize_data.py_, which will produce Plotly sunburst plots for each file in the previous directory, and a scatter plot with the joined data from various searches with some extra information. Wheather these plots should be shown and/or saved can be personalized while executing the script.
 
 ## Sample results:
 
