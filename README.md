@@ -12,8 +12,9 @@ Executing _scrape_data.py_ will gather job offer locations from a personalized s
   This script also joins the processed job location files into one pandas DataFrame, which is visualized in the Scatter plot. To prevent duplicated job locations, this script automatically excludes the job locations from the European Union file, since all of the information in this file is also contained in the Country specified files. <p>
 
 Of course, the Plotly plots can be interacted with. The following images are mere screenshots of some of the results:
-<p>
-<p>
+<p> 
+<p> 
+<p> 
   
 ### Scatter plot, displaying Cities with at least 25 'Data Scientist' entry-level job offers: 
 On the x-axis we have a cost of living + rent index, and on the y-axis the average salary. The size of the bubbles indicates the found quantity of jobs in the respective city.<p>
