@@ -357,7 +357,7 @@ def plot_scatter(df, show=True, save=False, min_jobs=10, text=False, template='p
                      size='Number of jobs', hover_name='City', color='Country', log_x=True, size_max=60,
                      text='City' if text else None, template=template,
                      )
-    fig.update_traces(textposition='middle center')
+    fig.update_traces(textposition='top center')
     fig.add_annotation(x=1.49, y=4100,
                        text='Where dinheiro is papel',
                        showarrow=True,
