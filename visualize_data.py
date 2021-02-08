@@ -20,6 +20,7 @@ for filename in os.listdir(origin_directory):
                   template='plotly_dark', transparent_bg=True)
 
 # Plot with average salary, cost of living, and number of jobs per city
-plot_scatter(df_joined_locations, show=True, save=True, min_jobs=10, text=False, template='plotly_dark', transparent_bg=True)
+plot_scatter(df_joined_locations, show=True, save=True, min_jobs=25, text=True, template='plotly_dark',
+             transparent_bg=True)
 
 del df, df_joined_locations, origin_directory, filename
