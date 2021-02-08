@@ -12,7 +12,7 @@ Executing _scrape_data.py_ will gather job offer locations from a personalized s
 
 Sunburst plot for job offers in the European Union:
 
-![Sunburst Plot EU](Sunburst plot EU.png)
+![Sunburst Plot EU](/Plots/EU.png)
 
 Scatter plot:
 
