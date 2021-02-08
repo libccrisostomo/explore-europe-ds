@@ -10,10 +10,10 @@ Executing _scrape_data.py_ will gather job offer locations from a personalized s
 2. Ran _process_data.pt_
 3. Ran _visualize_data.py_ with personalized parameters, in order to show and save the resulting plots (to 'Results' folder, as html) <p>
 
+Of course, the Plotly plots can be interacted with. The following images are mere screenshots of some of the results:
 <p>
   
 ### Scatter plot, displaying Cities with at least 25 job offers: <p>
-Interactive plot: 
   
 ![Sunburst Plot EU](./Plots/Scatter_plot.png)
 
