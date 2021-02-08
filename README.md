@@ -9,7 +9,7 @@ The execution of the script _process_data.py_ will process and clean all files i
 
 1. Execute _scrape_data.py_ with the keyword 'Data Scientist' for each of the following locations: Austria, Denmark, France, Germany, Ireland, Italy, Netherlands, Portugal, and European Union.
 2. Run _process_data.py_
-3. Run _visualize_data.py_ with personalized parameters, to show and save the resulting plots (to 'Results' folder, as html) <br>
+3. Run _visualize_data.py_ with personalized parameters, to show and save the resulting plots (to 'Results' folder, as HTML file) <br>
   This script also joins the processed job location files into one pandas DataFrame, which is visualized in the Scatter plot. To prevent duplicated job locations, this script automatically excludes the job locations from the European Union file, since all of the information in this file is also contained in the Country specified files. <p>
 
 Of course, the Plotly plots can be interacted with. The following images are mere screenshots of some of the results:
