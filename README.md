@@ -11,12 +11,13 @@ Executing _scrape_data.py_ will gather job offer locations from a personalized s
 3. Ran _visualize_data.py_ with personalized parameters, in order to show and save the resulting plots (to 'Results' folder, as html) 
 
   
-Scatter plot, displaying Cities with at least 25 job offers: <p>
+Scatter plot, displaying Cities with at least 25 job offers: <br>
 ![Sunburst Plot EU](./Plots/Scatter_plot.png)
 
 <br>
+<br>
           
-Sunburst plot for job offers in the European Union:
+Sunburst plot for job offers in the European Union: <br>
 
 ![Sunburst Plot EU](./Plots/Sunburst_plot_EU.png)
 
