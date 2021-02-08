@@ -15,4 +15,5 @@ Sunburst plot for job offers in the European Union:
 ![Sunburst Plot EU](./Plots/Sunburst_EU.png)
 
 Scatter plot:
+![Sunburst Plot EU](./Plots/Scatter_plot.png)
 
